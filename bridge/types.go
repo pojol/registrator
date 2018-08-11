@@ -20,15 +20,16 @@ type RegistryAdapter interface {
 }
 
 type Config struct {
-	HostIp          string
-	Internal        bool
-	Explicit        bool
-	UseIpFromLabel  string
-	ForceTags       string
-	RefreshTtl      int
-	RefreshInterval int
-	DeregisterCheck string
-	Cleanup         bool
+	HostIp               string
+	Internal             bool
+	Explicit             bool
+	UseIpFromLabel       string
+	UseIpFromNetworkName string
+	ForceTags            string
+	RefreshTtl           int
+	RefreshInterval      int
+	DeregisterCheck      string
+	Cleanup              bool
 }
 
 type Service struct {

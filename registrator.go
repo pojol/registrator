@@ -12,7 +12,7 @@ import (
 
 	dockerapi "github.com/fsouza/go-dockerclient"
 	"github.com/gliderlabs/pkg/usage"
-	"github.com/gliderlabs/registrator/bridge"
+	"github.com/onecer/registrator/bridge"
 )
 
 var Version string
@@ -23,6 +23,7 @@ var hostIp = flag.String("ip", "", "IP for ports mapped to the host")
 var internal = flag.Bool("internal", false, "Use internal ports instead of published ones")
 var explicit = flag.Bool("explicit", false, "Only register containers which have SERVICE_NAME label set")
 var useIpFromLabel = flag.String("useIpFromLabel", "", "Use IP which is stored in a label assigned to the container")
+var useIpFromNetworkName = flag.String("useIpFromNetworkName", "", "Use IP from container network's name.")
 var refreshInterval = flag.Int("ttl-refresh", 0, "Frequency with which service TTLs are refreshed")
 var refreshTtl = flag.Int("ttl", 0, "TTL for services (default is no expiry)")
 var forceTags = flag.String("tags", "", "Append tags for all registered services")
@@ -76,6 +77,10 @@ func main() {
 		log.Println("Forcing host IP to", *hostIp)
 	}
 
+	if *useIpFromNetworkName != "" {
+		log.Println("Use IP from network ", *useIpFromNetworkName)
+	}
+
 	if (*refreshTtl == 0 && *refreshInterval > 0) || (*refreshTtl > 0 && *refreshInterval == 0) {
 		assert(errors.New("-ttl and -ttl-refresh must be specified together or not at all"))
 	} else if *refreshTtl > 0 && *refreshTtl <= *refreshInterval {
@@ -103,15 +108,16 @@ func main() {
 	}
 
 	b, err := bridge.New(docker, flag.Arg(0), bridge.Config{
-		HostIp:          *hostIp,
-		Internal:        *internal,
-		Explicit:        *explicit,
-		UseIpFromLabel:  *useIpFromLabel,
-		ForceTags:       *forceTags,
-		RefreshTtl:      *refreshTtl,
-		RefreshInterval: *refreshInterval,
-		DeregisterCheck: *deregister,
-		Cleanup:         *cleanup,
+		HostIp:               *hostIp,
+		Internal:             *internal,
+		Explicit:             *explicit,
+		UseIpFromLabel:       *useIpFromLabel,
+		UseIpFromNetworkName: *useIpFromNetworkName,
+		ForceTags:            *forceTags,
+		RefreshTtl:           *refreshTtl,
+		RefreshInterval:      *refreshInterval,
+		DeregisterCheck:      *deregister,
+		Cleanup:              *cleanup,
 	})
 
 	assert(err)

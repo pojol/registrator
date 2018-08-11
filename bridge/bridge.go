@@ -332,6 +332,15 @@ func (b *Bridge) newService(port ServicePort, isgroup bool) *Service {
 		}
 	}
 
+	// useIpFromNetworkName
+	if b.config.UseIpFromNetworkName != "" {
+		network, exists := container.NetworkSettings.Networks[b.config.UseIpFromNetworkName]
+		if exists {
+			service.IP = network.IPAddress
+			log.Println("Use useIpFromNetworkName get IP:"+ service.IP)
+		}
+	}
+
 	if port.PortType == "udp" {
 		service.Tags = combineTags(
 			mapDefault(metadata, "tags", ""), b.config.ForceTags, "udp")

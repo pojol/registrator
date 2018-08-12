@@ -1,4 +1,42 @@
 # Registrator
+## 问题描述
+
+在这篇文章《[Docker Swarm Mode中部署SpringCloud微服务](https://uublog.com/article/20180805/docker-swarm-deploy-micro-services/)》之后
+
+遇到了点新问题。
+
+在运行时指定自己网络的时候，容器里面多个网络，多个IP，但是注册的不是固定注册某个网卡的IP作为服务IP。
+
+这就导致有时候注册的IP不是属于overlay网络的IP。服务访问就会出现问题。
+
+<!--more-->
+
+如果是用rencher部署的话，它有一个label记录了容器IP。可以用`registrator`的`-useIpFromLabel`读取它label。而docker swarm并没有记录相关IP到label 也就不能用这个参数。
+
+所以我fork了registrator的最新源码，做了点修改。让它支持可以传入在运行docker时，attach的network名字，根据这个网络名字在它container信息中取得它IP。
+
+如我前面运行docker的服务的时候指定`--network=micro-service`
+
+那么我运行`registrator`的时候，用我修改过的镜像`doubleshit/registrator:v7`指定`-useIpFromNetworkName=micro-service`参数即可。
+
+如：
+
+```bash
+docker run -d \
+    --restart=always \
+    --name=registrator \
+    --net=host \
+    --volume=/var/run/docker.sock:/tmp/docker.sock \
+    doubleshit/registrator:v7 \
+    -cleanup \
+    -internal \
+    -ip <NODE_IP> \
+    -useIpFromNetworkName=micro-service \
+      consul://<NODE_IP>:8500
+```
+
+*commit的时候信息network写成了netword无视就好 哈哈*
+
 
 Service registry bridge for Docker.
 

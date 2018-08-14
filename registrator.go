@@ -123,7 +123,7 @@ func main() {
 		RefreshInterval:      *refreshInterval,
 		DeregisterCheck:      *deregister,
 		Cleanup:              *cleanup,
-		forceServiceIp:       *forceServiceIp,
+		ForceServiceIp:       *forceServiceIp,
 	})
 
 	assert(err)

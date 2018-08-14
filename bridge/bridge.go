@@ -341,6 +341,11 @@ func (b *Bridge) newService(port ServicePort, isgroup bool) *Service {
 		}
 	}
 
+	// ForceUsingServiceIp
+	if b.config.ForceUsingServiceIp != "" {
+		service.IP = b.config.ForceUsingServiceIp
+	}
+
 	if port.PortType == "udp" {
 		service.Tags = combineTags(
 			mapDefault(metadata, "tags", ""), b.config.ForceTags, "udp")

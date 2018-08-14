@@ -30,6 +30,7 @@ type Config struct {
 	RefreshInterval      int
 	DeregisterCheck      string
 	Cleanup              bool
+	ForceServiceIp       string
 }
 
 type Service struct {

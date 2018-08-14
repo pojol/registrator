@@ -32,6 +32,7 @@ var deregister = flag.String("deregister", "always", "Deregister exited services
 var retryAttempts = flag.Int("retry-attempts", 0, "Max retry attempts to establish a connection with the backend. Use -1 for infinite retries")
 var retryInterval = flag.Int("retry-interval", 2000, "Interval (in millisecond) between retry-attempts.")
 var cleanup = flag.Bool("cleanup", false, "Remove dangling services")
+var forceServiceIp = flag.String("forceServiceIp", "", "Force using this IP for all registered services.")
 
 func getopt(name, def string) string {
 	if env := os.Getenv(name); env != "" {
@@ -81,6 +82,10 @@ func main() {
 		log.Println("Use IP from network ", *useIpFromNetworkName)
 	}
 
+	if *forceServiceIp != "" {
+		log.Println("Forcing Service IP to", *forceServiceIp)
+	}
+
 	if (*refreshTtl == 0 && *refreshInterval > 0) || (*refreshTtl > 0 && *refreshInterval == 0) {
 		assert(errors.New("-ttl and -ttl-refresh must be specified together or not at all"))
 	} else if *refreshTtl > 0 && *refreshTtl <= *refreshInterval {
@@ -118,6 +123,7 @@ func main() {
 		RefreshInterval:      *refreshInterval,
 		DeregisterCheck:      *deregister,
 		Cleanup:              *cleanup,
+		forceServiceIp:       *forceServiceIp,
 	})
 
 	assert(err)

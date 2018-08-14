@@ -341,9 +341,9 @@ func (b *Bridge) newService(port ServicePort, isgroup bool) *Service {
 		}
 	}
 
-	// ForceUsingServiceIp
-	if b.config.ForceUsingServiceIp != "" {
-		service.IP = b.config.ForceUsingServiceIp
+	// Force Using ServiceIp
+	if b.config.ForceServiceIp != "" {
+		service.IP = b.config.ForceServiceIp
 	}
 
 	if port.PortType == "udp" {

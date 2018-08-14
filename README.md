@@ -37,6 +37,8 @@ docker run -d \
 
 *commit的时候信息network写成了netword无视就好 哈哈*
 
+增加`-forceServiceIp` 可以强制使用指定IP,比如在docker swarm中,我可以强制指定为指定的IP,这样就不会变为集群内部网络的IP,在开发环境使用可以方便开发在本地远程调用consul中的服务.
+
 
 Service registry bridge for Docker.
 

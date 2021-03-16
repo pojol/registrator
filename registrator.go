@@ -12,7 +12,7 @@ import (
 
 	dockerapi "github.com/fsouza/go-dockerclient"
 	"github.com/gliderlabs/pkg/usage"
-	"github.com/onecer/registrator/bridge"
+	"github.com/pojol/registrator/bridge"
 )
 
 var Version string

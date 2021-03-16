@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/onecer/registrator/bridge"
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/pojol/registrator/bridge"
 )
 
 const DefaultInterval = "10s"
@@ -86,6 +86,9 @@ func (r *ConsulAdapter) Register(service *bridge.Service) error {
 	registration.Address = service.IP
 	registration.Check = r.buildCheck(service)
 	registration.Meta = service.Attrs
+
+	log.Printf("consul register ip:%v port:%v", service.IP, service.Port)
+
 	return r.client.Agent().ServiceRegister(registration)
 }
 
@@ -95,10 +98,17 @@ func (r *ConsulAdapter) buildCheck(service *bridge.Service) *consulapi.AgentServ
 		check.Status = status
 	}
 	if path := service.Attrs["check_http"]; path != "" {
-		check.HTTP = fmt.Sprintf("http://%s:%d%s", service.IP, service.Port, path)
+
+		port := "80"
+		if port = service.Attrs["check_port"]; port == "" {
+			log.Printf("check port not exist set default %v", port)
+		}
+
+		check.HTTP = fmt.Sprintf("http://%s:%s%s", service.IP, port, path)
 		if timeout := service.Attrs["check_timeout"]; timeout != "" {
 			check.Timeout = timeout
 		}
+		log.Printf("add check ip:%v port:%v path:%v", service.IP, service.Port, path)
 	} else if path := service.Attrs["check_https"]; path != "" {
 		check.HTTP = fmt.Sprintf("https://%s:%d%s", service.IP, service.Port, path)
 		if timeout := service.Attrs["check_timeout"]; timeout != "" {
@@ -128,6 +138,7 @@ func (r *ConsulAdapter) buildCheck(service *bridge.Service) *consulapi.AgentServ
 	if deregister_after := service.Attrs["check_deregister_after"]; deregister_after != "" {
 		check.DeregisterCriticalServiceAfter = deregister_after
 	}
+
 	return check
 }
 

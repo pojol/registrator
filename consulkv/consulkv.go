@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/onecer/registrator/bridge"
 	consulapi "github.com/hashicorp/consul/api"
+	"github.com/pojol/registrator/bridge"
 )
 
 func init() {

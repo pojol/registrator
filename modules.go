@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "github.com/onecer/registrator/consul"
-	_ "github.com/onecer/registrator/consulkv"
-	_ "github.com/onecer/registrator/etcd"
-	_ "github.com/onecer/registrator/skydns2"
-	_ "github.com/onecer/registrator/zookeeper"
+	_ "github.com/pojol/registrator/consul"
+	_ "github.com/pojol/registrator/consulkv"
+	_ "github.com/pojol/registrator/etcd"
+	_ "github.com/pojol/registrator/skydns2"
+	_ "github.com/pojol/registrator/zookeeper"
 )
